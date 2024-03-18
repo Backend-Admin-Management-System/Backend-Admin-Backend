@@ -7,6 +7,9 @@ const bcrypt = require("bcrypt");
 bcrypt.genSalt(10).then((data) => {
   console.log(data);
 });
+app.get("/health",(req,res)=>{
+  res.status(200).json({status:"success",message:"backend run success"})
+})
 //config cors
 const cors = require("cors");
 app.use(cors());
