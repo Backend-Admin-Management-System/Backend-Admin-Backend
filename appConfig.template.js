@@ -1,3 +1,11 @@
+//Instructions for Team Members
+
+//Team members are advised to follow these steps for setting up their local development environment:
+
+//1. Copy `appConfig.template.js` to`appConfig.js`.
+//2. Replace placeholder values in `appConfig.js` with actual configuration details specific to their local environment.
+//3(optional)  If Git already track appConfig.js, YOU may want to use this command git rm --cached appConfig.js to remove appConfig.js from git tracking. 
+
 module.exports = {
     jwtConfig: {
         secret: "shhhhhha3red-secret",
