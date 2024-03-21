@@ -11,3 +11,6 @@ package-lock.json
 
 # Log files
 /logs
+
+# Config files, appConfig.js use appconfig.template.js to modify and create.
+appConfig.js
