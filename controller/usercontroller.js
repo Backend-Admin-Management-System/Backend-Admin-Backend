@@ -77,12 +77,12 @@ const updateUserAsync = async (req, res) => {
     user.id
   );
   if (!checkUserResult.isSuccess) {
-    res.sendCommonValue({}, "Username already exists", 400, 400);
+    res.sendCommonValue({}, "Username and User ID do not exists", 400, 400);
     return;
   }
   let dbResult = await userservice.uptUserByIdAsync(user);
   if (dbResult.isSuccess) {
-    res.sendCommonValue(user, "Username already exists", 1);
+    res.sendCommonValue(user, "Updated user succeed", 1);
     return;
   } else {
     res.sendCommonValue({}, "", 0);
