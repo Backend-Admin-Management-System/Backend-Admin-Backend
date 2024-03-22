@@ -57,7 +57,7 @@ var usercontroller = require("../controller/usercontroller");
  *        description: Server Error
  */
 router.post(
-  "",
+  "/addUser",
   commonValidate([
     body("username").notEmpty().withMessage("Not a valid username"),
     body("password").notEmpty().isLength({ min: 6 }),
@@ -264,7 +264,7 @@ router.put(
  *      500:
  *        description: Server Error
  */
- router.get("/getUserById",
+router.get("/getUserById",
   commonValidate([
     query("id").notEmpty().withMessage("Not a valid id"),
   ]),
