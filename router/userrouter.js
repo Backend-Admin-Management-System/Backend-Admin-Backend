@@ -1,4 +1,5 @@
 var express = require("express");
+require('express-async-errors');
 var router = express.Router();
 
 const { body, query, param } = require("express-validator");

@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+require('express-async-errors');
 
 const { body } = require("express-validator");
 const { commonValidate } = require("../middleware/expressValidator");
