@@ -1,48 +1,44 @@
-
-const { db } = require("../db/mysqldb.js");
+const userModel = require("../model/user");
+const { Op, where} = require("sequelize");
 
 var getUserbyNameAsync = async (name) => {
-  let sql = "SELECT * FROM user where username=? ";
-  let result = await db.query(sql, [name]);
+  let queryUser = await userModel.findAll({ where: { username: name } });
+
   let user = { id: 0 };
-  if (result[0].length > 0) {
-    user.id = result[0][0].id;
-    user.username = result[0][0].username;
-    user.password = result[0][0].password;
-    user.email = result[0][0].email;
-    user.age = result[0][0].age;
-    user.gender = result[0][0].gender;
+  if (queryUser != null&&queryUser.length>0) {
+    let oneUser=queryUser[0]
+    user.id = oneUser.id;
+    user.username = oneUser.username;
+    user.password = oneUser.password;
+    user.email = oneUser.email;
+    user.age = oneUser.age;
+    user.gender = oneUser.gender;
   }
+
   return { isSuccess: true, message: "", data: user };
 };
 
 var addUserAsync = async (user) => {
-  let sql =
-    "insert into user(username,password,email,address,age,gender) values (?,?,?,?,?,?)";
-  let result = await db.query(sql, [
-    user.username,
-    user.password,
-    user.email,
-    user.address,
-    user.age,
-    user.gender,
-  ]);
+  let newuser= await userModel.create({
+    username: user.username,
+    password: user.password,
+    email: user.email,
+    age: user.age,
+    gender: user.gender
+  });
   return { isSuccess: true, message: "" };
 };
 
 var getUserListAsync = async (page, pageSize) => {
-  let countSql = "SELECT count(*) total FROM user; ";
-  let resultCount = await db.query(countSql);
-  let total = resultCount[0][0].total;
+  let total = await userModel.count();
   if (total == 0) {
     return { isSuccess: true, message: "", data: { items: [], total: 0 } };
   }
-  let sql = "SELECT * FROM user limit ? offset ? ;";
-  let resultData = await db.query(sql, [pageSize, (page - 1) * pageSize]);
+  let {count, rows} = await userModel.findAndCountAll({limit: pageSize, offset: (page-1) * pageSize});
 
   let userlist = [];
-  if (resultData[0].length > 0) {
-    resultData[0].forEach((element) => {
+  if (rows.length > 0) {
+    rows.forEach((element) => {
       let user = { id: 0 };
       user.id = element.id;
       user.username = element.username;
@@ -56,49 +52,51 @@ var getUserListAsync = async (page, pageSize) => {
   return {
     isSuccess: true,
     message: "",
-    data: { items: userlist, total: total },
+    data: { items: userlist , total: total },
   };
 };
 
-const delUserByIdAsync = async (idsString) => {
+var delUserByIdAsync = async (idsString) => {
   const ids = idsString.split(",").map((id) => parseInt(id));
-  let sql = "Delete FROM user where id in (?); ";
-  let reuslt = await db.query(sql, [ids]);
-  if (reuslt[0].affectedRows > 0) {
-    return { isSuccess: true, mesage: "" };
-  }
+  const affectedRows = await userModel.destroy(
+      {
+        where: {
+          id : {
+            [Op.in]: ids
+          }
+        }
+      }
+  );
 
-  return { isSuccess: false, mesage: "" };
-};
+  return affectedRows > 0 ? {isSuccess: true, mesage: ""} : {isSuccess: false, mesage: ""};
+}
 
 var uptUserByIdAsync = async (user) => {
-  let sql =
-    "Update user set username=?,email=?,address=?,age=?,gender=? where id =?";
-  let result = await db.query(sql, [
-    user.username,
-    user.email,
-    user.address,
-    user.age,
-    user.gender,
-    user.id,
-  ]);
-  if (result[0].affectedRows > 0) {
+  const [result] = await userModel.update({
+    username: user.username,
+    email: user.email,
+    address: user.address,
+    age: user.age,
+    gender: user.gender
+  },{where: {id: user.id}});
+
+  if (result > 0) {
     return { isSuccess: true, mesage: "" };
   }
   return { isSuccess: false, mesage: "" };
 };
 
 var checkUserNameAsync = async (uername, id) => {
-  let sql = "SELECT * FROM user where username=? ";
-  let result = await db.query(sql, [uername]);
+  let result = await userModel.findAll({where:{username: uername}})
   let user = { id: 0 };
-  if (result[0].length > 0) {
-    user.id = result[0][0].id;
-    user.username = result[0][0].username;
-    user.password = result[0][0].password;
-    user.email = result[0][0].email;
-    user.age = result[0][0].age;
-    user.gender = result[0][0].gender;
+  if (result != null&& result.length > 0) {
+    let oneUser = result[0]
+    user.id = oneUser.id;
+    user.username = oneUser.username;
+    user.password = oneUser.password;
+    user.email = oneUser.email;
+    user.age = oneUser.age;
+    user.gender = oneUser.gender;
   }
 
   if (user.id > 0 && user.id !== id) {
@@ -109,16 +107,16 @@ var checkUserNameAsync = async (uername, id) => {
 };
 
 var getUserbyIdAsync = async (id) => {
-  let sql = "SELECT * FROM user where id=? ";
-  let result = await db.query(sql, [id]);
   let user = { id: 0 };
-  if (result[0].length > 0) {
-    user.id = result[0][0].id;
-    user.username = result[0][0].username;
-    user.password = result[0][0].password;
-    user.email = result[0][0].email;
-    user.age = result[0][0].age;
-    user.gender = result[0][0].gender;
+  let result = await userModel.findAll({where:{id: id}});
+  if (result.length > 0) {
+    let oneUser = result[0];
+    user.id = oneUser.id;
+    user.username = oneUser.username;
+    user.password = oneUser.password;
+    user.email = oneUser.email;
+    user.age = oneUser.age;
+    user.gender = oneUser.gender;
   }
   return { isSuccess: true, message: "", data: user };
 };
