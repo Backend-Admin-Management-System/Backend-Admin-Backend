@@ -1,4 +1,4 @@
-const {  DataTypes } = require("sequelize");
+const {  DataTypes, where} = require("sequelize");
 const { sequelize } = require("../db/sequelizedb");
 
 const user = sequelize.define(
@@ -38,5 +38,6 @@ const user = sequelize.define(
   },
   { timestamps: false,tableName: 'user' }
 );
+
 
 module.exports = user;
