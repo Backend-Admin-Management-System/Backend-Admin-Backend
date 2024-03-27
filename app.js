@@ -56,6 +56,9 @@ app.use("/api/auth", authrouter);
 const userrouter = require("./router/userrouter");
 app.use("/api/users", userrouter);
 
+const coursecategoryrouter = require("./router/coursecategoryrouter");
+app.use("/api/coursecategory", coursecategoryrouter);
+
 //config erorhandle
 const erorhandle = require("./middleware/errorhandling");
 app.use(erorhandle.errorhandling);
