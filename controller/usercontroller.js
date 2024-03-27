@@ -33,14 +33,12 @@ const addUserAsync = async (req, res) => {
   }
 };
 
-const getUserAsync = async (req, res) => {
-  let dbResult = await userservice.getUserbyNameAsync(req.query.username);
-  let user = dbResult.data;
+const getUserAsync = (req, res) => {
   res.sendCommonValue(
-        user,
-        "successful",
-        1
-    );
+    { id: 1, name: "admin", age: 22, dt: new Date() },
+    "getUserAsync",
+    1
+  );
 };
 
 const getUserListAsync = async (req, res) => {
